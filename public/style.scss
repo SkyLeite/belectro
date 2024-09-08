@@ -1,0 +1,333 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: #fff1e5;
+  font-size: 20px;
+  color: #070707;
+  margin: 0px;
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+h1 {
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0em 0em 1em 0em;
+}
+
+a {
+  color: #070707;
+  border-bottom: 1px dashed #070707;
+  padding-bottom: 0px;
+  text-decoration: none;
+  transition: padding 0.25s;
+}
+
+a:hover {
+  padding-bottom: 2px;
+}
+
+#hwaet {
+  padding: 2em;
+  max-width: 1000px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+#controls {
+  display: flex;
+}
+
+.control {
+  margin-right: 1em;
+  display: flex;
+  flex-direction: column;
+  width: 10em;
+  font-size: 0.75em;
+  text-align: center;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 0.35em;
+  background: #070707;
+  border: none;
+  border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 1.1em;
+  width: 1.1em;
+  border-radius: 50%;
+  background: #070707;
+  margin-top: -4px;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+#footer {
+  font-size: 0.8em;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+code {
+  font-size: 0.7rem;
+  white-space: pre;
+  display: inline-block;
+}
+
+.actions {
+  margin-top: 10px;
+  font-size: 0.7rem;
+}
+
+.actions span {
+  cursor: pointer;
+}
+
+#computer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#grid {
+  display: grid;
+  background-color: green;
+}
+
+@mixin drop-shadow {
+  filter: drop-shadow(2px 2px 2px black);
+}
+
+@mixin border {
+  border-radius: 5px;
+  border: 1px solid black;
+}
+
+@mixin hoverable {
+  transform: rotate(0deg);
+  transition: transform 100ms ease-in-out;
+  transition: scale 50ms ease-in-out;
+
+  &:hover {
+    transform: rotate(1deg);
+    scale: 1.03;
+  }
+}
+
+button {
+  @include border;
+  @include drop-shadow;
+  @include hoverable;
+
+  background-color: white;
+}
+
+$transparent: hsla(0deg 0% 0% / 0%);
+
+.cell {
+  @include hoverable;
+
+  margin: 5px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+
+  color: white;
+
+  width: 70px;
+  height: 70px;
+
+  position: relative;
+
+  &.empty {
+    background-color: white;
+    border-radius: 5px;
+    scale: 0.8;
+  }
+
+  & .cell-chip {
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    background: black;
+  }
+
+  & .cell-contacts {
+    position: fixed;
+    z-index: 0;
+  }
+
+  & .cell-contacts-x {
+    $width: 120%;
+    $height: 80%;
+
+    width: $width;
+    height: $height;
+
+    background-image: linear-gradient(
+      180deg,
+      $transparent 25%,
+      #808080 25%,
+      #808080 50%,
+      $transparent 50%,
+      $transparent 75%,
+      #808080 75%,
+      #808080 100%
+    );
+    background-size: 16px 16px;
+
+    top: -calc($width - 100%);
+    left: -calc($height - 100%);
+  }
+
+  & .cell-contacts-y {
+    $width: 80%;
+    $height: 120%;
+
+    width: $width;
+    height: $height;
+
+    top: -calc($width - 100%);
+    left: -calc($height - 100%);
+    background-image: linear-gradient(
+      90deg,
+      $transparent 25%,
+      #808080 25%,
+      #808080 50%,
+      $transparent 50%,
+      $transparent 75%,
+      #808080 75%,
+      #808080 100%
+    );
+    background-size: 16px 16px;
+  }
+}
+
+#test {
+  margin: 50px;
+}
+
+.chip {
+  @include border;
+  @include drop-shadow;
+  @include hoverable;
+
+  border-top-left-radius: 1px;
+  border-bottom-left-radius: 1px;
+  border-bottom-right-radius: 1px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: blue;
+  padding: 6px 6px 0 6px;
+
+  width: 100px;
+  height: 130px;
+
+  & .chip-image {
+    background-color: black;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 100%;
+    height: 60%;
+    font-size: 60px;
+  }
+
+  & .chip-name {
+    background-color: white;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: 100%;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  & .chip-contacts {
+    width: 100%;
+    height: 100%;
+
+    background-image: linear-gradient(
+      90deg,
+      #edbb5f 40%,
+      #000000 40%,
+      #000000 50%,
+      #edbb5f 50%,
+      #edbb5f 90%,
+      #000000 90%,
+      #000000 100%
+    );
+    background-size: 20px 20px;
+  }
+}
+
+.dialog {
+  @include drop-shadow;
+  @include border;
+
+  --width: 500px;
+  --height: 200px;
+  position: absolute;
+  top: calc(50% - (var(--height) / 2));
+  left: calc(50% - (var(--width) / 2));
+  width: var(--width);
+  height: var(--height);
+  background-color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  & .dialog-close {
+    top: 7px;
+    right: 10px;
+    position: absolute;
+  }
+}
+
+#grid > span {
+  width: 12px;
+  height: 12px;
+}
+
+code #grid {
+  line-height: 0;
+}
+
+.board-cell {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

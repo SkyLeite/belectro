@@ -1,0 +1,8 @@
+# Nix related
+.direnv
+result
+
+# Elm related
+elm-stuff
+public/main.js
+node_modules/
