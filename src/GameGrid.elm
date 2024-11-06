@@ -15,12 +15,12 @@ type alias GameGrid =
 
 width : number
 width =
-    10
+    8
 
 
 height : number
 height =
-    10
+    8
 
 
 new : GameGrid

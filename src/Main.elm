@@ -67,7 +67,7 @@ update msg model =
         BuyAt x y cell ->
             model
                 |> Model.mapGameResult (Cell.buy cell)
-                |> Result.andThen (Model.placeInGrid x y Cell.Computer)
+                |> Result.andThen (Model.placeInGrid x y cell)
                 |> Result.map Model.closeDialog
                 |> Result.withDefault (Model.closeDialog model)
                 |> with Cmd.none
@@ -79,12 +79,12 @@ view model =
     , body =
         [ main_ []
             -- [ div [ id "test" ] [ Views.Cell.view Cell.Computer ]
-            [ div []
-                [ span [] [ text <| String.fromInt model.game.coins, text " coins" ]
-                , button [ onClick Mine ] [ text "Mine!" ]
-                ]
-            , Computer.view model.game
-            , GameGrid.view model.grid
+            [ -- div []
+              --    [ span [] [ text <| String.fromInt model.game.coins, text " coins" ]
+              --    , button [ onClick Mine ] [ text "Mine!" ]
+              --    ]
+              -- Computer.view model.game
+              GameGrid.view model.grid
             , viewMaybe (flip Dialog.view model.game) model.dialog
             ]
         ]

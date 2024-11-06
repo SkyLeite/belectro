@@ -7,4 +7,4 @@ type alias GameState =
 
 new : GameState
 new =
-    { coins = 0, computers = 0 }
+    { coins = 100000, computers = 0 }
