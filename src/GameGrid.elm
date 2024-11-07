@@ -1,11 +1,14 @@
-module GameGrid exposing (GameGrid, get, new, place, view)
+module GameGrid exposing (GameGrid, adjacent, findPath, get, movesFrom, new, place, view)
 
+import AStar
 import Array
 import Cell exposing (Cell)
 import Grid exposing (Grid)
 import Html exposing (Html, code)
 import Html.Attributes exposing (id, style)
+import Maybe.Extra
 import Msg exposing (Msg(..))
+import Set exposing (Set)
 import Views.Cell as Cell
 
 
@@ -61,3 +64,33 @@ place x y cell grid =
 
         _ ->
             Err "Cell is occupied"
+
+
+adjacent : ( Int, Int ) -> Set ( Int, Int )
+adjacent ( x, y ) =
+    let
+        adjacentPositions : List ( Int, Int )
+        adjacentPositions =
+            [ ( x - 1, y + 0 )
+            , ( x + 1, y + 0 )
+            , ( x + 0, y + 1 )
+            , ( x + 0, y - 1 )
+            ]
+    in
+    Set.fromList adjacentPositions
+
+
+movesFrom : GameGrid -> ( Int, Int ) -> Set ( Int, Int )
+movesFrom grid ( x, y ) =
+    adjacent ( x, y )
+        |> Set.filter (\pos -> Maybe.Extra.unwrap False Cell.isFilled <| Grid.get pos grid)
+
+
+findPath : ( Int, Int ) -> ( Int, Int ) -> GameGrid -> Maybe (List ( Int, Int ))
+findPath from to grid =
+    AStar.findPath AStar.straightLineCost (movesFrom grid) from to
+
+
+find : (Cell -> Bool) -> GameGrid -> Maybe Cell
+find f grid =
+    Grid.rows

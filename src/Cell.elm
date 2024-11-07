@@ -70,6 +70,16 @@ purchaseableCells =
     ]
 
 
+isFilled : Cell -> Bool
+isFilled cell =
+    case cell of
+        None ->
+            False
+
+        _ ->
+            True
+
+
 buy : Cell -> GameState -> Result String GameState
 buy cell =
     case cell of

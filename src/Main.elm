@@ -51,6 +51,11 @@ update msg model =
             model |> with Cmd.none
 
         OnTick _ ->
+            let
+                pathToEnd : Maybe (List ( Int, Int ))
+                pathToEnd =
+                    GameGrid.findPath ( 1, 1 ) ( 7, 7 ) model.grid
+            in
             model
                 |> Model.mapGame Computer.tick
                 |> with Cmd.none
