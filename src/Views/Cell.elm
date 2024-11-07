@@ -44,8 +44,14 @@ icon cell =
                 _ ->
                     div [] []
 
-        _ ->
-            div [] []
+        None ->
+            Icon.blank
+
+        Antenna ->
+            Icon.antenna
+
+        Power ->
+            Icon.power
 
 
 cellClass : Cell -> String

@@ -10,6 +10,7 @@ type Cell
     | Computer
     | Antenna
     | Connector ConnectorKind
+    | Power
 
 
 type ConnectorKind
@@ -34,6 +35,9 @@ toChar cell =
         Connector _ ->
             "|"
 
+        Power ->
+            "Z"
+
 
 toString : Cell -> String
 toString cell =
@@ -49,6 +53,9 @@ toString cell =
 
         Connector _ ->
             "Connector"
+
+        Power ->
+            "Power"
 
 
 toAnchorName : Int -> Int -> String
@@ -77,3 +84,6 @@ buy cell =
 
         Connector _ ->
             Connector.buy
+
+        Power ->
+            \game -> Ok game

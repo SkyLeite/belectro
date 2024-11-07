@@ -26,6 +26,7 @@ height =
 new : GameGrid
 new =
     Grid.repeat width height Cell.None
+        |> Grid.set ( 1, 1 ) Cell.Power
 
 
 view : GameGrid -> Html Msg
