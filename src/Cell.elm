@@ -3,6 +3,7 @@ module Cell exposing (..)
 import Computer
 import Connector
 import GameState exposing (GameState)
+import Position exposing (Position)
 
 
 type Cell
@@ -58,8 +59,8 @@ toString cell =
             "Power"
 
 
-toAnchorName : Int -> Int -> String
-toAnchorName x y =
+toAnchorName : Position -> String
+toAnchorName ( x, y ) =
     "--cell-" ++ String.fromInt x ++ "-" ++ String.fromInt y
 
 

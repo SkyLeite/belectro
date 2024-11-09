@@ -4,6 +4,7 @@ import Cell exposing (Cell)
 import Dialog exposing (Dialog)
 import GameGrid exposing (GameGrid)
 import GameState exposing (GameState)
+import Position exposing (Position)
 
 
 type alias Model =
@@ -23,9 +24,9 @@ init _ =
     )
 
 
-placeInGrid : Int -> Int -> Cell -> Model -> Result String Model
-placeInGrid x y cell model =
-    GameGrid.place x y cell model.grid
+placeInGrid : Position -> Cell -> Model -> Result String Model
+placeInGrid position cell model =
+    GameGrid.place position cell model.grid
         |> Result.map (\g -> { model | grid = g })
 
 

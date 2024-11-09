@@ -12,6 +12,7 @@ import Html.Events exposing (onClick)
 import Html.Extra exposing (viewMaybe)
 import Model exposing (Model)
 import Msg exposing (..)
+import Position exposing (Position)
 import Tick
 import Util exposing (with)
 
@@ -52,7 +53,7 @@ update msg model =
 
         OnTick _ ->
             let
-                pathToEnd : Maybe (List ( Int, Int ))
+                pathToEnd : Maybe (List Position)
                 pathToEnd =
                     GameGrid.findPath ( 1, 1 ) ( 7, 7 ) model.grid
             in
@@ -60,19 +61,19 @@ update msg model =
                 |> Model.mapGame Computer.tick
                 |> with Cmd.none
 
-        ClickedCellAt x y ->
-            case GameGrid.get x y model.grid of
+        ClickedCellAt position ->
+            case GameGrid.get position model.grid of
                 Cell.None ->
-                    { model | dialog = Just <| Dialog Dialog.Buy ( x, y ) }
+                    { model | dialog = Just <| Dialog Dialog.Buy position }
                         |> with Cmd.none
 
                 _ ->
                     model |> with Cmd.none
 
-        BuyAt x y cell ->
+        BuyAt position cell ->
             model
                 |> Model.mapGameResult (Cell.buy cell)
-                |> Result.andThen (Model.placeInGrid x y cell)
+                |> Result.andThen (Model.placeInGrid position cell)
                 |> Result.map Model.closeDialog
                 |> Result.withDefault (Model.closeDialog model)
                 |> with Cmd.none

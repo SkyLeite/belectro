@@ -6,6 +6,7 @@ import Html exposing (Attribute, Html, article, button, div, header, p, section,
 import Html.Attributes exposing (class, id)
 import Html.Events exposing (onClick)
 import Msg exposing (Msg)
+import Position exposing (Position)
 import Views.Chip
 
 
@@ -36,8 +37,8 @@ dialog attributes body =
         ]
 
 
-buyDialog : ( Int, Int ) -> GameState -> Html Msg
-buyDialog ( x, y ) game =
+buyDialog : Position -> GameState -> Html Msg
+buyDialog position game =
     dialog
         [ id "buy-dialog"
         ]
@@ -47,7 +48,7 @@ buyDialog ( x, y ) game =
                 (\( cell, costFn, _ ) ->
                     Views.Chip.new { name = Cell.toString cell, image = Cell.toChar cell }
                         |> Views.Chip.withCost (costFn game)
-                        |> Views.Chip.withOnClick (Msg.BuyAt x y cell)
+                        |> Views.Chip.withOnClick (Msg.BuyAt position cell)
                         |> Views.Chip.view
                 )
                 Cell.purchaseableCells

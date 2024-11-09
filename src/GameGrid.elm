@@ -1,4 +1,4 @@
-module GameGrid exposing (GameGrid, adjacent, findPath, get, movesFrom, new, place, view)
+module GameGrid exposing (GameGrid, find, findAll, findPath, get, indexed, movesFrom, new, place, set, view)
 
 import AStar
 import Array
@@ -8,6 +8,7 @@ import Html exposing (Html, code)
 import Html.Attributes exposing (id, style)
 import Maybe.Extra
 import Msg exposing (Msg(..))
+import Position exposing (Position)
 import Set exposing (Set)
 import Views.Cell as Cell
 
@@ -32,6 +33,11 @@ new =
         |> Grid.set ( 1, 1 ) Cell.Power
 
 
+set : Position -> Cell -> GameGrid -> GameGrid
+set =
+    Grid.set
+
+
 view : GameGrid -> Html Msg
 view grid =
     code
@@ -41,56 +47,76 @@ view grid =
         ]
         (grid
             |> Grid.rows
-            |> Array.indexedMap (\y row -> Array.indexedMap (\x cell -> Cell.view cell (Msg.ClickedCellAt x y)) row)
+            |> Array.indexedMap (\y row -> Array.indexedMap (\x cell -> Cell.view cell (Msg.ClickedCellAt ( x, y ))) row)
             |> Array.map Array.toList
             |> Array.toList
             |> List.concat
         )
 
 
-get : Int -> Int -> GameGrid -> Cell
-get x y grid =
-    Grid.get ( x, y ) grid |> Maybe.withDefault Cell.None
+get : Position -> GameGrid -> Cell
+get position grid =
+    Grid.get position grid |> Maybe.withDefault Cell.None
 
 
-place : Int -> Int -> Cell -> GameGrid -> Result String GameGrid
-place x y cell grid =
-    case Grid.get ( x, y ) grid of
+place : Position -> Cell -> GameGrid -> Result String GameGrid
+place position cell grid =
+    case Grid.get position grid of
         Just Cell.None ->
-            Ok <| Grid.set ( x, y ) cell grid
+            Ok <| Grid.set position cell grid
 
         Nothing ->
-            Ok <| Grid.set ( x, y ) cell grid
+            Ok <| Grid.set position cell grid
 
         _ ->
             Err "Cell is occupied"
 
 
-adjacent : ( Int, Int ) -> Set ( Int, Int )
-adjacent ( x, y ) =
-    let
-        adjacentPositions : List ( Int, Int )
-        adjacentPositions =
-            [ ( x - 1, y + 0 )
-            , ( x + 1, y + 0 )
-            , ( x + 0, y + 1 )
-            , ( x + 0, y - 1 )
-            ]
-    in
-    Set.fromList adjacentPositions
+movesFrom : GameGrid -> Position -> Set Position
+movesFrom grid pos =
+    Position.adjacent pos
+        |> Set.filter (\p -> Maybe.Extra.unwrap False Cell.isFilled <| Grid.get p grid)
 
 
-movesFrom : GameGrid -> ( Int, Int ) -> Set ( Int, Int )
-movesFrom grid ( x, y ) =
-    adjacent ( x, y )
-        |> Set.filter (\pos -> Maybe.Extra.unwrap False Cell.isFilled <| Grid.get pos grid)
-
-
-findPath : ( Int, Int ) -> ( Int, Int ) -> GameGrid -> Maybe (List ( Int, Int ))
+findPath : Position -> Position -> GameGrid -> Maybe (List ( Int, Int ))
 findPath from to grid =
     AStar.findPath AStar.straightLineCost (movesFrom grid) from to
 
 
-find : (Cell -> Bool) -> GameGrid -> Maybe Cell
-find f grid =
-    Grid.rows
+indexed : Grid a -> Grid ( Position, a )
+indexed =
+    Grid.indexedMap (\x y c -> ( ( x, y ), c ))
+
+
+findAll : (Cell -> Bool) -> GameGrid -> List Position
+findAll f =
+    indexed
+        >> Grid.foldl
+            (\( ( x, y ), cell ) cells ->
+                if f cell then
+                    ( x, y ) :: cells
+
+                else
+                    cells
+            )
+            []
+        >> List.reverse
+
+
+find : (Cell -> Bool) -> GameGrid -> Maybe Position
+find f =
+    indexed
+        >> Grid.foldl
+            (\( ( x, y ), cell ) acc ->
+                case acc of
+                    Just _ ->
+                        acc
+
+                    Nothing ->
+                        if f cell then
+                            Just ( x, y )
+
+                        else
+                            Nothing
+            )
+            Nothing

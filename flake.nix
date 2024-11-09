@@ -56,7 +56,6 @@
         elmPackages = [
           pkgs.elmPackages.elm
           # elmPackages.elm-xref
-          pkgs.elmPackages.elm-test
           pkgs.elmPackages.elm-live
           # elmPackages.elm-json
           pkgs.elmPackages.elm-review
@@ -64,6 +63,7 @@
           # elmPackages.elm-upgrade
           # elmPackages.elm-analyse
           pkgs.elmPackages.elm-language-server
+          pkgs.elmPackages.elm-test-rs
 
           pkgs.elm2nix
         ];

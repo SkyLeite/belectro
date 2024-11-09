@@ -6,6 +6,7 @@ import Html.Attributes exposing (attribute, class)
 import Html.Events exposing (onClick)
 import Icon
 import Msg exposing (Msg)
+import Position exposing (Position)
 
 
 view : Cell -> msg -> Html msg
@@ -14,12 +15,12 @@ view cell msg =
         [ icon cell ]
 
 
-boardView : Cell -> Int -> Int -> Html Msg
-boardView cell x y =
+boardView : Cell -> Position -> Html Msg
+boardView cell position =
     span
         [ class "board-cell"
-        , onClick <| Msg.ClickedCellAt x y
-        , attribute "style" ("anchor-name: " ++ toAnchorName x y)
+        , onClick <| Msg.ClickedCellAt position
+        , attribute "style" ("anchor-name: " ++ toAnchorName position)
         ]
         [ text <| toChar cell ]
 
