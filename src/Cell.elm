@@ -12,6 +12,7 @@ type Cell
     | Antenna
     | Connector ConnectorKind
     | Power
+    | Output
 
 
 type ConnectorKind
@@ -19,6 +20,16 @@ type ConnectorKind
     | Vertical
     | Cross
     | Diagonal
+
+
+isChip : Cell -> Bool
+isChip cell =
+    case cell of
+        Connector _ ->
+            False
+
+        _ ->
+            True
 
 
 toChar : Cell -> String
@@ -39,6 +50,9 @@ toChar cell =
         Power ->
             "Z"
 
+        Output ->
+            "O"
+
 
 toString : Cell -> String
 toString cell =
@@ -57,6 +71,9 @@ toString cell =
 
         Power ->
             "Power"
+
+        Output ->
+            "Output"
 
 
 toAnchorName : Position -> String
@@ -97,4 +114,7 @@ buy cell =
             Connector.buy
 
         Power ->
+            \game -> Ok game
+
+        Output ->
             \game -> Ok game

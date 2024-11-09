@@ -54,6 +54,9 @@ icon cell =
         Power ->
             Icon.power
 
+        Output ->
+            Icon.antenna
+
 
 cellClass : Cell -> String
 cellClass cell =
