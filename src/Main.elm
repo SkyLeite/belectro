@@ -55,7 +55,13 @@ update msg model =
             let
                 pathToEnd : Maybe (List Position)
                 pathToEnd =
-                    GameGrid.findPath ( 1, 1 ) ( 7, 7 ) model.grid
+                    Debug.log "path" <|
+                        case ( GameGrid.start model.grid, GameGrid.finish model.grid ) of
+                            ( Just start, Just finish ) ->
+                                GameGrid.findPath start finish model.grid
+
+                            _ ->
+                                Nothing
             in
             model
                 |> Model.mapGame Computer.tick

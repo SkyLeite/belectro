@@ -1,12 +1,11 @@
-module GameGrid exposing (GameGrid, find, findAll, findPath, get, indexed, movesFrom, new, place, set, view)
+module GameGrid exposing (GameGrid, find, findAll, findPath, finish, get, indexed, movesFrom, new, place, set, start, view)
 
 import AStar
 import Array
-import Cell exposing (Cell)
+import Cell exposing (Cell(..))
 import Grid exposing (Grid)
 import Html exposing (Html, code)
 import Html.Attributes exposing (id, style)
-import Maybe.Extra
 import Msg exposing (Msg(..))
 import Position exposing (Position)
 import Set exposing (Set)
@@ -31,6 +30,7 @@ new : GameGrid
 new =
     Grid.repeat width height Cell.None
         |> Grid.set ( 1, 1 ) Cell.Power
+        |> Grid.set ( 3, 3 ) Cell.Output
 
 
 set : Position -> Cell -> GameGrid -> GameGrid
@@ -74,8 +74,47 @@ place position cell grid =
 
 movesFrom : GameGrid -> Position -> Set Position
 movesFrom grid pos =
-    Position.adjacent pos
-        |> Set.filter (\p -> Maybe.Extra.unwrap False Cell.isFilled <| Grid.get p grid)
+    let
+        maybeCell : Maybe Cell
+        maybeCell =
+            Grid.get pos grid
+    in
+    case maybeCell of
+        Just cell ->
+            Position.adjacent pos
+                |> Set.filter
+                    (\p ->
+                        case Grid.get p grid of
+                            Just adjCell ->
+                                case ( Cell.isChip cell, Cell.isChip adjCell ) of
+                                    ( True, True ) ->
+                                        False
+
+                                    ( True, False ) ->
+                                        True
+
+                                    ( False, True ) ->
+                                        True
+
+                                    ( False, False ) ->
+                                        True
+
+                            _ ->
+                                False
+                    )
+
+        Nothing ->
+            Set.empty
+
+
+start : GameGrid -> Maybe Position
+start =
+    find (\c -> c == Cell.Power)
+
+
+finish : GameGrid -> Maybe Position
+finish =
+    find (\c -> c == Cell.Output)
 
 
 findPath : Position -> Position -> GameGrid -> Maybe (List ( Int, Int ))
