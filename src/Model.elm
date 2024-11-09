@@ -1,5 +1,6 @@
-module Model exposing (Model, closeDialog, init, mapGame, mapGameResult, placeInGrid)
+module Model exposing (Model, animator, closeDialog, init, mapGame, mapGameResult, placeInGrid)
 
+import Animator exposing (Animator)
 import Cell exposing (Cell)
 import Dialog exposing (Dialog)
 import GameGrid exposing (GameGrid)
@@ -11,6 +12,7 @@ type alias Model =
     { grid : GameGrid
     , dialog : Maybe Dialog
     , game : GameState
+    , particle : Animator.Timeline Position
     }
 
 
@@ -19,6 +21,7 @@ init _ =
     ( { grid = GameGrid.new
       , dialog = Nothing
       , game = GameState.new
+      , particle = Animator.init ( 0, 0 )
       }
     , Cmd.none
     )
@@ -48,3 +51,9 @@ mapGameResult fn model =
 
         Err err ->
             Err err
+
+
+animator : Animator Model
+animator =
+    Animator.animator
+        |> Animator.watching .particle (\newParticle model -> { model | particle = newParticle })

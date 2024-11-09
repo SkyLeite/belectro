@@ -1,5 +1,6 @@
 module Main exposing (main, update, view)
 
+import Animator
 import Basics.Extra exposing (flip)
 import Browser exposing (Document)
 import Cell
@@ -33,8 +34,8 @@ main =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Tick.onTick OnTick
+subscriptions model =
+    Model.animator |> Animator.toSubscription OnTick model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -51,7 +52,7 @@ update msg model =
         BuyComputer ->
             model |> with Cmd.none
 
-        OnTick _ ->
+        Play ->
             let
                 pathToEnd : Maybe (List Position)
                 pathToEnd =
@@ -62,8 +63,21 @@ update msg model =
 
                             _ ->
                                 Nothing
+
+                newModel : Model
+                newModel =
+                    case pathToEnd |> Maybe.andThen List.head of
+                        Just next ->
+                            { model | particle = model.particle |> Animator.go Animator.slowly next }
+
+                        Nothing ->
+                            model
             in
+            newModel |> with Cmd.none
+
+        OnTick newTime ->
             model
+                |> Animator.update newTime Model.animator
                 |> Model.mapGame Computer.tick
                 |> with Cmd.none
 
@@ -97,6 +111,7 @@ view model =
               --    ]
               -- Computer.view model.game
               GameGrid.view model.grid
+            , button [ onClick Play ] [ text "Play" ]
             , viewMaybe (flip Dialog.view model.game) model.dialog
             ]
         ]

@@ -12,3 +12,4 @@ type Msg
     | BuyAt Position Cell
     | BuyComputer
     | OnTick Time.Posix
+    | Play
