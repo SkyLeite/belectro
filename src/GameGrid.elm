@@ -1,12 +1,14 @@
 module GameGrid exposing (GameGrid, find, findAll, findPath, finish, get, indexed, movesFrom, new, place, set, start, view)
 
 import AStar
+import Animator
 import Array
 import Cell exposing (Cell(..))
 import Grid exposing (Grid)
 import Html exposing (Html, code)
 import Html.Attributes exposing (id, style)
 import Msg exposing (Msg(..))
+import Particle
 import Position exposing (Position)
 import Set exposing (Set)
 import Views.Cell as Cell
@@ -38,19 +40,21 @@ set =
     Grid.set
 
 
-view : GameGrid -> Html Msg
-view grid =
+view : Animator.Timeline Position -> GameGrid -> Html Msg
+view particle grid =
     code
         [ id "grid"
         , style "grid-template-rows" ("repeat(" ++ String.fromInt width ++ ", 1fr)")
         , style "grid-template-columns" ("repeat(" ++ String.fromInt height ++ ", 1fr)")
         ]
-        (grid
-            |> Grid.rows
-            |> Array.indexedMap (\y row -> Array.indexedMap (\x cell -> Cell.view cell (Msg.ClickedCellAt ( x, y ))) row)
-            |> Array.map Array.toList
-            |> Array.toList
-            |> List.concat
+        (Particle.view particle
+            :: (grid
+                    |> Grid.rows
+                    |> Array.indexedMap (\y row -> Array.indexedMap (\x cell -> Cell.view cell (Msg.ClickedCellAt ( x, y ))) row)
+                    |> Array.map Array.toList
+                    |> Array.toList
+                    |> List.concat
+               )
         )
 
 

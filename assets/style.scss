@@ -116,8 +116,19 @@ code {
 }
 
 #grid {
+  position: relative;
   display: grid;
   background-color: green;
+}
+
+#particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background-color: red;
+  left: -5px;
+  top: -5px;
 }
 
 @mixin drop-shadow {
@@ -175,7 +186,7 @@ $transparent: hsla(0deg 0% 0% / 0%);
   }
 
   &.empty {
-    scale: 0.9;
+    scale: 1;
   }
 
   &.cell-chip {

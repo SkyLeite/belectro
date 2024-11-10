@@ -60,15 +60,28 @@ update msg model =
                         case ( GameGrid.start model.grid, GameGrid.finish model.grid ) of
                             ( Just start, Just finish ) ->
                                 GameGrid.findPath start finish model.grid
+                                    |> Maybe.map ((::) start)
 
                             _ ->
                                 Nothing
 
                 newModel : Model
                 newModel =
-                    case pathToEnd |> Maybe.andThen List.head of
-                        Just next ->
-                            { model | particle = model.particle |> Animator.go Animator.slowly next }
+                    case pathToEnd of
+                        Just positions ->
+                            { model
+                                | particle =
+                                    Animator.interrupt
+                                        (List.concatMap
+                                            (\p ->
+                                                [ Animator.wait (Animator.millis 300)
+                                                , Animator.event (Animator.seconds 1) p
+                                                ]
+                                            )
+                                            positions
+                                        )
+                                        model.particle
+                            }
 
                         Nothing ->
                             model
@@ -110,7 +123,7 @@ view model =
               --    , button [ onClick Mine ] [ text "Mine!" ]
               --    ]
               -- Computer.view model.game
-              GameGrid.view model.grid
+              GameGrid.view model.particle model.grid
             , button [ onClick Play ] [ text "Play" ]
             , viewMaybe (flip Dialog.view model.game) model.dialog
             ]
